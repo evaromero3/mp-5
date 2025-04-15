@@ -1,7 +1,7 @@
 
 "use server";
 
-import  getCollection, {LINK_COLLECTION}  from "@/db"; 
+import  getCollection  from "@/db"; 
 import { LinkProps } from "@/types";
 
 export async function createNewLink(
@@ -13,6 +13,7 @@ export async function createNewLink(
   try {
     new URL(originalURL);
   } catch (error) {
+    console.error("URL validation error:", error);
     return { error: "Invalid URL provided." };
   }
 
