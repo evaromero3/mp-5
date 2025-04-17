@@ -1,7 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { TextField, Button, FormHelperText, Box, Typography } from "@mui/material";
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  FormHelperText,
+} from "@mui/material";
 
 export default function NewLinkForm() {
   const [orgLink, setOrgLink] = useState("");
@@ -9,13 +15,12 @@ export default function NewLinkForm() {
   const [feedback, setFeedback] = useState("");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault(); // Prevent default form submission behavior
+    e.preventDefault();
     setFeedback("Submitting...");
 
     const payload = { originalURL: orgLink, alias };
 
     try {
-      // Send a POST request to API endpoint -- calls backend logic 
       const res = await fetch("/api/links", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -24,12 +29,11 @@ export default function NewLinkForm() {
 
       const data = await res.json();
       if (!res.ok) {
-        // If there's an error, display it
         setFeedback(`Error: ${data.error || "Something went wrong."}`);
       } else {
-        // On success, display the new short link
-        setFeedback(`Success! Your short link is: ${window.location.origin}/r/${alias}`);
-        // Clear the input fields for further submissions
+        setFeedback(
+          `Success! Your short link is: ${window.location.origin}/r/${alias}`
+        );
         setOrgLink("");
         setAlias("");
       }
@@ -43,55 +47,67 @@ export default function NewLinkForm() {
     <Box
       component="form"
       onSubmit={handleSubmit}
-      className="w-96 rounded-xl p-4 bg-sky-400"
       sx={{
+        width: 384, // roughly 384px or 96 * 4px if using a 4px scale
+        borderRadius: 2, // theme's borderRadius value
+        p: 4, // padding: 4 spacing units
+        bgcolor: "primary.light", // use the primary light color from your theme
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         gap: 2,
       }}
     >
-      <Typography variant="h5">Create a New Short Link</Typography>
-      <TextField 
+      <Typography variant="h5" sx={{ color: "primary.contrastText" }}>
+        Create a New Short Link
+      </Typography>
+
+      <TextField
         variant="filled"
-        sx={{ 
-            width: "40%",
-           // The main input element for the filled variant
-           '& .MuiFilledInput-root': {
-               '&:hover': {
-               backgroundColor: '#8ec984', // Hover background color
-               },
-           },
-           
-           '& .MuiFormLabel-root': {
-               '&:hover': {
-               backgroundColor: '#8ec984', // Hover background color
-               },
-               padding: '0 4px', // some padding so text doesn't clash with edge
-           }, }}
+        sx={{
+          width: "100%",
+          // Style the input container for the filled TextField.
+          "& .MuiFilledInput-root": {
+            bgcolor: "background.paper", // Use your theme's background paper color
+            transition: "background-color 0.3s",
+            "&:hover": {
+              bgcolor: "secondary.light", // Change color on hover using theme's secondary color
+            },
+          },
+          // Style the label so its background is consistent with the input
+          "& .MuiFormLabel-root": {
+            transition: "background-color 0.3s",
+            "&:hover": {
+              bgcolor: "secondary.light",
+            },
+            px: 1, // padding (use shorthand for paddingLeft & paddingRight)
+          },
+        }}
         label="Original Link"
         placeholder="https://example.com"
         value={orgLink}
         onChange={(e) => setOrgLink(e.target.value)}
       />
 
-      <TextField 
+      <TextField
         variant="filled"
-        sx={{ 
-             width: "40%",
-            // The main input element for the filled variant
-            '& .MuiFilledInput-root': {
-                '&:hover': {
-                backgroundColor: '#8ec984', // Hover background color
-                },
+        sx={{
+          width: "100%",
+          "& .MuiFilledInput-root": {
+            bgcolor: "background.paper",
+            transition: "background-color 0.3s",
+            "&:hover": {
+              bgcolor: "secondary.light",
             },
-            
-            '& .MuiFormLabel-root': {
-                '&:hover': {
-                backgroundColor: '#8ec984', // Hover background color
-                },
-                padding: '0 4px', // some padding so text doesn't clash with edge
-            }, }}
+          },
+          "& .MuiFormLabel-root": {
+            transition: "background-color 0.3s",
+            "&:hover": {
+              bgcolor: "secondary.light",
+            },
+            px: 1,
+          },
+        }}
         label="Alias"
         placeholder="custom-alias"
         value={alias}
@@ -106,8 +122,11 @@ export default function NewLinkForm() {
       >
         Submit
       </Button>
-
-      {feedback && <FormHelperText>{feedback}</FormHelperText>}
+      
+      {feedback && <FormHelperText sx={{ color: "primary.contrastText" }}
+        >{feedback}</FormHelperText>}
+      
+      
     </Box>
   );
 }
